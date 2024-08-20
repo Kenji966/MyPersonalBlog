@@ -38,7 +38,7 @@ export function LanguageToggle() {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
           <ReactCountryFlag
-            countryCode={flagCountryCode}
+            countryCode={flagCountryCode as string}
             className="h-[1.2rem] w-[1.2rem] transition-all"
           />
           <span className="sr-only">Toggle language</span>
