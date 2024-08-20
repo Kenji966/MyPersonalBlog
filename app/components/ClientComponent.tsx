@@ -21,10 +21,16 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
       {data.map((post, idx) => {
         const title = language === 'JP' ? post.title_JP : language === 'HK' ? post.title_TW : post.title_EN;
         const description = language === 'JP' ? post.smallDescription_JP : language === 'HK' ? post.smallDescription_TW : post.smallDescription_EN;
-
+        
+        
+         if (!post.titleImage || !urlFor(post.titleImage).url()) {
+            console.error('url fail');
+        }
+        
+        const imageUrl = post.titleImage ? urlFor(post.titleImage).url() : "@/public/Project2.jpg";
         return (
           <Card key={idx}>
-            <Image src={urlFor(post.titleImage).url()} alt="" width={1200} height={700} className="rounded-t-lg h-[300px] object-cover" />
+            <Image src={imageUrl} alt="" width={1200} height={700} className="rounded-t-lg h-[300px] object-cover" />
             <CardContent className="mt-5">
               <h3 className="text-xl line-clamp-2 font-bold">{title}</h3>
               <p className="line-clamp-1 text-xs mt-1 text-blue-600">{post.type}</p>
