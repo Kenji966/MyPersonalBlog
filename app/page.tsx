@@ -1,6 +1,7 @@
 import { client } from "@/app/lib/sanity";
-import ClientComponent from './components/ClientComponent'; // 引入客户端组件
+import ClientComponent from './components/ClientComponent';
 import { simpleBlogCard } from "@/app/lib/interface";
+
 
 async function getData() {
   const query = `
@@ -9,6 +10,7 @@ async function getData() {
       title_JP,
       title_TW,
       type,
+      date,
       smallDescription_EN,
       smallDescription_JP,
       smallDescription_TW,
@@ -17,11 +19,12 @@ async function getData() {
     }
   `;
   const data = await client.fetch(query);
+  console.log(data);
   return data;
 }
 
 export default async function Home() {
-  const data: simpleBlogCard[] = await getData();
+  let data: simpleBlogCard[] = await getData();
 
   return (
     <ClientComponent data={data} />

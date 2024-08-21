@@ -22,7 +22,7 @@ export function LanguageToggle() {
   }, [language]);
 
   const flagCountryCode = {
-    EN: "EN", 
+    EN: "GB", 
     JP: "JP",
     HK: "HK",
   }[selectedLanguage];

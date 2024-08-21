@@ -1,6 +1,6 @@
 "use client";
 
-import { urlFor } from "@/app/lib/sanity";  // 确保导入 urlFor 函数
+import { urlFor } from "@/app/lib/sanity"; 
 import { simpleBlogCard } from "@/app/lib/interface";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
@@ -13,28 +13,49 @@ interface ClientComponentProps {
 }
 
 const ClientComponent = ({ data }: ClientComponentProps) => {
-  // 在这里使用语言上下文或者其他客户端逻辑
   const { language } = useLanguage();
+  const Title = language === 'JP' ? "こんにちは、私は馬偉堅（マ・ワイギン）ですが、Kenjiとも呼んでください。" 
+  : language === 'HK' ? "你好，我叫馬偉堅，你可以叫我 Kenji。歡迎來到我的個人開發博客！" 
+  : "Hi, I’m Wai Kin Ma, also known as Kenji.";
+  
+  const Description = language === 'JP' ? "ゲーム開発とウェブ開発を専門とするプロフェッショナルです。AR（拡張現実）、UIデザイン、エフェクトデザインの分野にも精通しています。このブログでは、これらの分野での経験や学習ノートを共有し、技術に対する情熱と専門知識をお見せします。私のスキルや背景を理解し、どのように価値を創造できるかを知っていただければと思います。" 
+  : language === 'HK' ? "我是一名專注於遊戲開發和網站開發的專業開發者。我的專業領域涵蓋了AR增強現實、UI設計和效果設計。在這個博客中，我會分享我在這些領域中的經驗和學習筆記，展示我對技術的熱情和專業知識。希望通過這些內容，你能夠更好地了解我的技能和背景，並探索我如何在這些領域中創造價值。" 
+  : "I’m a professional developer specializing in game development and web development. My expertise includes AR augmented reality, UI design, and effect design. On this blog, I’ll share my experiences and learning notes in these fields, showcasing my passion for technology and professional knowledge. I hope these insights will give you a better understanding of my skills and background and how I can create value in these areas.";
 
   return (
+    <div>
+    <div className="">
+        <h1 className="flex justify-center">{Title}</h1>
+        <br />
+        <h1 className="flex justify-center text-sm  text-gray-600 dark:text-gray-300">{Description}</h1>
+    </div>
     <div className="grid grid-cols-1 md:grid-cols-1 mt-4 gap-5">
       {data.map((post, idx) => {
-        const title = language === 'JP' ? post.title_JP : language === 'HK' ? post.title_TW : post.title_EN;
-        const description = language === 'JP' ? post.smallDescription_JP : language === 'HK' ? post.smallDescription_TW : post.smallDescription_EN;
         
         
-         if (!post.titleImage || !urlFor(post.titleImage).url()) {
+        const CardTitle = language === 'JP' ? post.title_JP : language === 'HK' ? post.title_TW : post.title_EN;
+        const CardDescription = language === 'JP' ? post.smallDescription_JP : language === 'HK' ? post.smallDescription_TW : post.smallDescription_EN;
+        
+        const imageUrl = post.titleImage ? urlFor(post.titleImage).url() : "/";
+
+        if (!post.titleImage || !urlFor(post.titleImage).url()) {
             console.error('url fail');
         }
         
-        const imageUrl = post.titleImage ? urlFor(post.titleImage).url() : "@/public/Project2.jpg";
         return (
           <Card key={idx}>
             <Image src={imageUrl} alt="" width={1200} height={700} className="rounded-t-lg h-[300px] object-cover" />
             <CardContent className="mt-5">
-              <h3 className="text-xl line-clamp-2 font-bold">{title}</h3>
+              <h3 className="text-xl line-clamp-2 font-bold">{CardTitle}</h3>
               <p className="line-clamp-1 text-xs mt-1 text-blue-600">{post.type}</p>
-              <p className="line-clamp-3 text-sm mt-2 text-gray-600 dark:text-gray-300">{description}</p>
+              <p className="text-xs mt-1 text-gray-500">
+              {new Date(post.date).toLocaleDateString(language, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                })}
+                </p>
+              <p className="line-clamp-3 text-sm mt-2 text-gray-600 dark:text-gray-300">{CardDescription}</p>
             </CardContent>
             <div className="flex justify-end">
               <Button asChild>
@@ -44,6 +65,7 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
           </Card>
         );
       })}
+    </div>
     </div>
   );
 };

@@ -1,3 +1,5 @@
+
+
 import { fullBlog } from "@/app/lib/interface";
 import { client, urlFor } from "@/app/lib/sanity";
 import Image from "next/image";
@@ -11,6 +13,7 @@ async function getData(slug: string) {
       title_TW,
       title_EN,
       type,
+      date,
       smallDescription_EN,
       smallDescription_JP,
       smallDescription_TW,
@@ -32,6 +35,12 @@ export default async function BlogArticle({
   searchParams: { lang?: string };
 }) {
   const data: fullBlog = await getData(params.slug);
+  if (!data || !data.titleImage) {
+    console.error('url fail');
+  }
+  
+  const imageUrl = data?.titleImage ? urlFor(data.titleImage).url() : "/Project2.jpg";
+  
 
   const languageFromHash = searchParams.lang || 'EN'; // 默认使用 'EN'
   const title =
@@ -55,6 +64,7 @@ export default async function BlogArticle({
       ? data.content_TW
       : data.content_EN;
 
+
   return (
     <div className="mt-6">
       <h1>
@@ -64,10 +74,17 @@ export default async function BlogArticle({
         <span className="mt-2 block text-3xl text-center leading-8 font-bold tracking-tight sm:text-4xl">
           {title}
         </span>
+        <p className="text-xs mt-1 text-gray-500">
+        {new Date(data.date).toLocaleDateString(languageFromHash, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })}
+    </p>
       </h1>
       <div className="flex justify-center mt-8">
         <Image
-          src={urlFor(data.titleImage).url()}
+          src={imageUrl}
           alt=""
           width={800}
           height={800}
