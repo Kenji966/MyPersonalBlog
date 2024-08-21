@@ -4,6 +4,8 @@ import { fullBlog } from "@/app/lib/interface";
 import { client, urlFor } from "@/app/lib/sanity";
 import Image from "next/image";
 import { PortableText } from "next-sanity";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 async function getData(slug: string) {
   const query = `
@@ -94,8 +96,11 @@ export default async function BlogArticle({
 
       <div className="mt-16">{smallDescription}</div>
 
-      <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-primary bg-clip-padding prose-a:text-primary">
-        <PortableText value={content} />
+      <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-primary bg-clip-padding prose-a:text-primary mb-16">
+      <PortableText value={content} />
+      <Button asChild >
+              <Link href="/" className="text-gray-600 dark:text-gray-300" >Back</Link>
+      </Button>
       </div>
     </div>
   );
