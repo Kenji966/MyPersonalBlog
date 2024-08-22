@@ -67,7 +67,9 @@
     transform-origin: 0%;
   }
 }
-
+html, body {
+  overflow-x: hidden;
+}
 .switch {
   width: 160px;
   height: 100px;
