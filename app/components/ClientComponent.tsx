@@ -7,6 +7,11 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useLanguage } from "@/app/components/LanguageContext";
+import { motion, AnimatePresence, useIsPresent  } from "framer-motion";
+import { useRouter } from "next/router";
+import { usePathname } from 'next/navigation';
+
+
 
 interface ClientComponentProps {
   data: simpleBlogCard[];
@@ -14,6 +19,8 @@ interface ClientComponentProps {
 
 const ClientComponent = ({ data }: ClientComponentProps) => {
   const { language } = useLanguage();
+  const pathname = usePathname(); 
+
   const Title = language === 'JP' ? "こんにちは、私は馬偉堅（マ・ワイギン）ですが、Kenjiとも呼んでください。" 
   : language === 'HK' ? "你好，我叫馬偉堅，你可以叫我 Kenji。歡迎來到我的個人開發博客！" 
   : "Hi, I’m Wai Kin Ma, also known as Kenji.";
@@ -25,9 +32,21 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
   return (
     <div>
     <div className="">
+    <AnimatePresence mode="wait">
+    <motion.div 
+              key={pathname} 
+              style={{ x: 555 }} 
+              animate={{ x: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.25,
+                ease: [0, 0.71, 0.2, 1.01]
+              }}
+              >
         <h1 className="flex justify-center">{Title}</h1>
         <br />
         <h1 className="flex justify-center text-sm  text-gray-600 dark:text-gray-300">{Description}</h1>
+    </motion.div></AnimatePresence>
     </div>
     <div className="grid grid-cols-1 md:grid-cols-1 mt-4 gap-5">
       {data.map((post, idx) => {
@@ -43,6 +62,22 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
         }
         
         return (
+        <motion.div 
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          duration: 0.8,
+          delay: 1,
+          ease: [0, 0.71, 0.2, 1.01]
+        }}>
+        <motion.div
+            className="box"
+             whileHover={{ scale: 1.05, rotate:2.5}}
+             whileTap={{ scale: 0.8, rotate:-2.5 }}
+             transition={{ type: "spring", stiffness: 400, damping: 17 }
+            }
+        >
+        <Link href={`/blog/${post.currentSlug}?lang=${language}`}>
           <Card key={idx}>
             <Image src={imageUrl} alt="" width={1200} height={700} className="rounded-t-lg h-[300px] object-cover" />
             <CardContent className="mt-5">
@@ -57,12 +92,10 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
                 </p>
               <p className="line-clamp-3 text-sm mt-2 text-gray-600 dark:text-gray-300">{CardDescription}</p>
             </CardContent>
-            <div className="flex justify-end">
-              <Button asChild>
-              <Link href={`/blog/${post.currentSlug}?lang=${language}`}>Read More</Link>
-              </Button>
-            </div>
           </Card>
+              </Link>
+              </motion.div>
+              </motion.div>    
         );
       })}
     </div>

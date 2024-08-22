@@ -1,11 +1,9 @@
-
-
 import { fullBlog } from "@/app/lib/interface";
 import { client, urlFor } from "@/app/lib/sanity";
-import Image from "next/image";
 import { PortableText } from "next-sanity";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import BlogContent from "./BlogContent"; // Client 端组件的导入
 
 async function getData(slug: string) {
   const query = `
@@ -37,14 +35,14 @@ export default async function BlogArticle({
   searchParams: { lang?: string };
 }) {
   const data: fullBlog = await getData(params.slug);
+
   if (!data || !data.titleImage) {
     console.error('url fail');
   }
-  
-  const imageUrl = data?.titleImage ? urlFor(data.titleImage).url() : "/Project2.jpg";
-  
 
+  const imageUrl = data?.titleImage ? urlFor(data.titleImage).url() : "/Project2.jpg";
   const languageFromHash = searchParams.lang || 'EN'; // 默认使用 'EN'
+
   const title =
     languageFromHash === 'JP'
       ? data.title_JP
@@ -66,42 +64,17 @@ export default async function BlogArticle({
       ? data.content_TW
       : data.content_EN;
 
-
   return (
-    <div className="mt-6">
-      <h1>
-        <span className="block text-base text-center text-primary font-semibold tracking-wide uppercase">
-          {data.type}
-        </span>
-        <span className="mt-2 block text-3xl text-center leading-8 font-bold tracking-tight sm:text-4xl">
-          {title}
-        </span>
-        <p className="text-xs mt-1 text-gray-500">
-        {new Date(data.date).toLocaleDateString(languageFromHash, {
+    <BlogContent
+      imageUrl={imageUrl}
+      title={title}
+      smallDescription={smallDescription}
+      content={content}
+      date={new Date(data.date).toLocaleDateString(languageFromHash, {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
       })}
-    </p>
-      </h1>
-      <div className="flex justify-center mt-8">
-        <Image
-          src={imageUrl}
-          alt=""
-          width={800}
-          height={800}
-          className="rounded-lg mt-8 border"
-        />
-      </div>
-
-      <div className="mt-16">{smallDescription}</div>
-
-      <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-primary bg-clip-padding prose-a:text-primary mb-16">
-      <PortableText value={content} />
-      <Button asChild >
-              <Link href="/" className="text-gray-600 dark:text-gray-300" >Back</Link>
-      </Button>
-      </div>
-    </div>
+    />
   );
 }
