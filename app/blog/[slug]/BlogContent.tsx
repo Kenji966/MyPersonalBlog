@@ -69,10 +69,9 @@ export default function BlogContent({
         console.log("YouTube URL:", value.url); // 调试信息
         const videoId = new URL(value.url).searchParams.get('v');
         return (
-          <div className="my-8 justify-center">
+          <div className="relative w-full pb-[56.25%] mb-4">
             <iframe
-              width="760"
-              height="415"
+              className="absolute top-0 left-0 w-full h-full"
               src={`https://www.youtube.com/embed/${videoId}`}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
