@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { urlFor } from "@/app/lib/sanity";
+import { TwitterTweetEmbed  } from 'react-twitter-embed';
+
+
 
 
 interface BlogContentProps {
@@ -40,6 +43,8 @@ function Section({ children }: SectionProps) {
     );
   }
 
+  
+
 export default function BlogContent({
   imageUrl,
   title,
@@ -48,55 +53,59 @@ export default function BlogContent({
   date,
 }: BlogContentProps) {
     const [isOpen, setIsOpen] = useState(false)
-  const components = {
-    types: {
-      image: ({ value }: any) => {
-        const imageUrl = urlFor(value.asset).url(); 
-        console.log("Image URL:", imageUrl); // 这里打印 URL 以便调试
-        return (
-          <div className="my-8">
-            <Image
-              src={imageUrl}
-              alt={value.alt || 'Blog Image'}
-              width={800}
-              height={800}
-              className="rounded-lg border"
-            />
-          </div>
-        );
+    const components = {
+      types: {
+        image: ({ value }: { value: { asset: { _ref: string }; alt?: string } }) => {
+          const imageUrl = urlFor(value.asset).url();
+          console.log("Image URL:", imageUrl); // 调试信息
+          return (
+            <div className="my-8">
+              <Image
+                src={imageUrl}
+                alt={value.alt || 'Blog Image'}
+                width={800}
+                height={800}
+                className="rounded-lg border"
+                layout="responsive"
+              />
+            </div>
+          );
+        },
+        youtube: ({ value }: { value: { url: string } }) => {
+          console.log("YouTube URL:", value.url); // 调试信息
+          try {
+            const videoId = new URL(value.url).searchParams.get('v');
+            if (!videoId) throw new Error("Video ID not found");
+            return (
+              <div className="relative w-full pb-[56.25%] mb-4">
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full"
+                  src={`https://www.youtube.com/embed/${videoId}`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="YouTube video"
+                />
+              </div>
+            );
+          } catch (error) {
+            console.error("Error embedding YouTube video:", error);
+            return <p>Error loading video.</p>;
+          }
+        },
+        twitter: ({ value }: { value: { url: string } }) => {
+          console.log("Twitter URL:", value.url); // 调试信息
+          const tweetId = new URL(value.url).pathname.split('/').pop() as string;
+
+          return (
+            <div className="relative w-full mb-4">
+                    <TwitterTweetEmbed  tweetId={tweetId} />
+        </div>
+          );
+        }
       },
-      youtube: ({ value }: { value: { url: string } }) => {
-        const videoId = new URL(value.url).searchParams.get('v');
-        return (
-          <div className="relative w-full pb-[56.25%] mb-4">
-            <iframe
-              className="absolute top-0 left-0 w-full h-full"
-              src={`https://www.youtube.com/embed/${videoId}`}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title="YouTube video"
-            />
-          </div>
-        );
-      },
-      twitter: ({ value }: { value: { url: string } }) => {
-        // 获取 Twitter 账户名和 Tweet ID
-        const tweetId = new URL(value.url).pathname.split('/').pop();
-        return (
-          <div className="relative w-full mb-4">
-            <blockquote className="twitter-tweet">
-              <a href={value.url}></a>
-            </blockquote>
-            {/* 加载 Twitter 嵌入脚本 */}
-            <script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
-          </div>
-        );
-      }
-      
-    },
+    };
     
-  };
   return (
     <div>
     <div className="mt-6">
