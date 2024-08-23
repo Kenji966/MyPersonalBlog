@@ -66,7 +66,6 @@ export default function BlogContent({
         );
       },
       youtube: ({ value }: { value: { url: string } }) => {
-        console.log("YouTube URL:", value.url); // 调试信息
         const videoId = new URL(value.url).searchParams.get('v');
         return (
           <div className="relative w-full pb-[56.25%] mb-4">
@@ -81,7 +80,20 @@ export default function BlogContent({
           </div>
         );
       },
-  
+      twitter: ({ value }: { value: { url: string } }) => {
+        // 获取 Twitter 账户名和 Tweet ID
+        const tweetId = new URL(value.url).pathname.split('/').pop();
+        return (
+          <div className="relative w-full mb-4">
+            <blockquote className="twitter-tweet">
+              <a href={value.url}></a>
+            </blockquote>
+            {/* 加载 Twitter 嵌入脚本 */}
+            <script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
+          </div>
+        );
+      }
+      
     },
     
   };
