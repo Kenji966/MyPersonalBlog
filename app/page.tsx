@@ -4,6 +4,7 @@ import { simpleBlogCard } from "@/app/lib/interface";
 
 
 async function getData() {
+  const timestamp = new Date().getTime(); 
   const query = `
     *[_type == 'blog'] | order(_createdAt desc) {
       title_EN,
@@ -18,7 +19,8 @@ async function getData() {
       titleImage
     }
   `;
-  const data = await client.fetch(query);
+
+  const data = await client.fetch(query, { timestamp });
   console.log(data);
   return data;
 }
