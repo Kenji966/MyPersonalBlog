@@ -6,6 +6,7 @@ import Image from "next/image";
 import BlogContent from "./BlogContent"; // Client 端组件的导入
 
 async function getData(slug: string) {
+  const timestamp = new Date().getTime(); 
   const query = `
     *[_type == 'blog' && slug.current == '${slug}'] {
       "currentSlug": slug.current,
@@ -23,9 +24,9 @@ async function getData(slug: string) {
       titleImage
     }[0]`;
 
-  const data = await client.fetch(query);
-  return data;
-}
+    const data = await client.fetch(query, { timestamp });
+    return data;
+  }
 
 export default async function BlogArticle({
   params,
