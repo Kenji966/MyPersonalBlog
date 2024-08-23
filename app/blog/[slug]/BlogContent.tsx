@@ -150,9 +150,9 @@ export default function BlogContent({
         </motion.div>
       </div>
       
-      <Section>  <div className="mt-16">{smallDescription}</div>
-      <div className="mt-16 prose prose-blue prose-sm dark:prose-invert prose-li:marker:text-primary bg-clip-padding prose-a:text-primary mb-28">
-        <PortableText value={content} components={components}  />
+      <Section>  
+      <div className="mt-16 prose prose-blue lg:prose-lg sm:prose-sm dark:prose-invert prose-li:marker:text-primary bg-clip-padding prose-a:text-primary mb-16 max-w-none">
+      <PortableText value={content} components={components}  />
         <Button asChild>
           <Link href="/" className="text-gray-600 dark:text-gray-300">Back</Link>
         </Button>
