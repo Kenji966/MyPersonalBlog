@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
+import { urlFor } from "@/app/lib/sanity";
 
 
 interface BlogContentProps {
@@ -47,7 +48,44 @@ export default function BlogContent({
   date,
 }: BlogContentProps) {
     const [isOpen, setIsOpen] = useState(false)
-
+  const components = {
+    types: {
+      image: ({ value }: any) => {
+        const imageUrl = urlFor(value.asset).url(); 
+        console.log("Image URL:", imageUrl); // 这里打印 URL 以便调试
+        return (
+          <div className="my-8">
+            <Image
+              src={imageUrl}
+              alt={value.alt || 'Blog Image'}
+              width={800}
+              height={800}
+              className="rounded-lg border"
+            />
+          </div>
+        );
+      },
+      youtube: ({ value }: { value: { url: string } }) => {
+        console.log("YouTube URL:", value.url); // 调试信息
+        const videoId = new URL(value.url).searchParams.get('v');
+        return (
+          <div className="my-8 justify-center">
+            <iframe
+              width="760"
+              height="415"
+              src={`https://www.youtube.com/embed/${videoId}`}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title="YouTube video"
+            />
+          </div>
+        );
+      },
+  
+    },
+    
+  };
   return (
     <div>
     <div className="mt-6">
@@ -94,7 +132,7 @@ export default function BlogContent({
       
       <Section>  <div className="mt-16">{smallDescription}</div>
       <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-primary bg-clip-padding prose-a:text-primary mb-16">
-        <PortableText value={content} />
+        <PortableText value={content} components={components}  />
         <Button asChild>
           <Link href="/" className="text-gray-600 dark:text-gray-300">Back</Link>
         </Button>
