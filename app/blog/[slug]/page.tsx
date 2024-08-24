@@ -43,6 +43,7 @@ export default async function BlogArticle({
 
   const imageUrl = data?.titleImage ? urlFor(data.titleImage).url() : "/Project2.jpg";
   const languageFromHash = searchParams.lang || 'EN'; // 默认使用 'EN'
+  const type = data.type;
 
   const title =
     languageFromHash === 'JP'
@@ -71,6 +72,7 @@ export default async function BlogArticle({
       title={title}
       smallDescription={smallDescription}
       content={content}
+      type={type}
       date={new Date(data.date).toLocaleDateString(languageFromHash, {
         year: 'numeric',
         month: 'long',

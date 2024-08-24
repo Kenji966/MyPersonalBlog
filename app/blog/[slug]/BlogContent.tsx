@@ -6,11 +6,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { urlFor } from "@/app/lib/sanity";
 import { TwitterTweetEmbed  } from 'react-twitter-embed';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 
 
 interface BlogContentProps {
@@ -19,6 +18,7 @@ interface BlogContentProps {
   smallDescription: string;
   content: any;
   date: string;
+  type:string;
 }
 interface SectionProps {
     children: React.ReactNode; 
@@ -50,14 +50,15 @@ export default function BlogContent({
   title,
   smallDescription,
   content,
+  type,
   date,
 }: BlogContentProps) {
     const [isOpen, setIsOpen] = useState(false)
+
     const components = {
       types: {
         image: ({ value }: { value: { asset: { _ref: string }; alt?: string } }) => {
           const imageUrl = urlFor(value.asset).url();
-          console.log("Image URL:", imageUrl); // 调试信息
           return (
             <div className="my-8">
               <Image
@@ -72,7 +73,6 @@ export default function BlogContent({
           );
         },
         youtube: ({ value }: { value: { url: string } }) => {
-          console.log("YouTube URL:", value.url); // 调试信息
           try {
             const videoId = new URL(value.url).searchParams.get('v');
             if (!videoId) throw new Error("Video ID not found");
@@ -94,7 +94,6 @@ export default function BlogContent({
           }
         },
         twitter: ({ value }: { value: { url: string } }) => {
-          console.log("Twitter URL:", value.url); // 调试信息
           const tweetId = new URL(value.url).pathname.split('/').pop() as string;
 
           return (
@@ -104,12 +103,11 @@ export default function BlogContent({
           );
         },
         code: ({ value }: { value: { language: string; code: string } }) => {
-          console.log("Code block:", value.code);
           return (
-            <div className="my-8">
-              <SyntaxHighlighter language={value.language} style={solarizedlight}>
+            <div className='my-2'>
+            <SyntaxHighlighter language={value.language} >
                 {value.code}
-              </SyntaxHighlighter>
+            </SyntaxHighlighter>
             </div>
           );
         }
@@ -130,13 +128,13 @@ export default function BlogContent({
       }}
     >
      <h1> 
-        <span className="block text-base text-center text-primary font-semibold tracking-wide uppercase">
-        {title}
+        <span className="block text-base text-center text-primary font-semibold  tracking-wide uppercase">
+        <p className="text-blue-600 text-xs"> #{type} </p>
         </span>
         <span className="mt-2 block text-3xl text-center leading-8 font-bold tracking-tight sm:text-4xl">
          {title} 
         </span>
-        <p className="text-xs mt-1 text-gray-500">{date}</p>
+        <p className="text-xs mt-2 text-gray-500 text-end ">{date}</p>
       </h1> 
       </motion.div>
       <div className="flex justify-center mt-8">
@@ -164,7 +162,7 @@ export default function BlogContent({
       <div className="mt-16 prose prose-blue lg:prose-lg sm:prose-sm dark:prose-invert prose-li:marker:text-primary bg-clip-padding prose-a:text-primary mb-16 max-w-none">
       <PortableText value={content} components={components}  />
         <Button asChild>
-          <Link href="/" className="text-gray-600 dark:text-gray-300">Back</Link>
+          <Link href="/" > <p className="text-white dark:text-black">Back</p></Link>
         </Button>
       </div>
       </Section>

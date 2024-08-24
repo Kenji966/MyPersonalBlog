@@ -10,6 +10,8 @@ import { useLanguage } from "@/app/components/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from "react";
+import {useMediaQuery} from '@mui/material'
+
 
 interface ClientComponentProps {
   data: simpleBlogCard[];
@@ -20,6 +22,8 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
   const pathname = usePathname(); 
   const [isAnimating, setIsAnimating] = useState(false);
   const [destination, setDestination] = useState<string | null>(null);
+  const isMobile = useMediaQuery('(max-width:768px)');
+
 
   const Title = language === 'JP' ? "こんにちは、私は馬偉堅（マ・ワイギン）ですが、Kenjiとも呼んでください。" 
     : language === 'HK' ? "你好，我叫馬偉堅，你可以叫我 Kenji。歡迎來到我的個人開發博客！" 
@@ -38,7 +42,7 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
       if (destination) {
         const timeout = setTimeout(() => {
           window.location.href = destination;
-        }, 800); // 等待动画完成后进行导航
+        }, 100); // 等待动画完成后进行导航
   
         return () => clearTimeout(timeout); // 清理超时
       }
@@ -50,7 +54,7 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
         {!isAnimating && (
           <motion.div
             key="content-enter"
-            initial={{ x: 555, opacity: 0 }}
+            initial={{ x: isMobile ? 300 : 555, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{
               duration: 0.8,
@@ -68,8 +72,8 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
           <motion.div
             key="content-exit"
             initial={{ x: 0, opacity: 1  }}
-            animate={{ x: -550, opacity: 0 }}
-            exit={{ x: -555, opacity: 0 }}
+            animate={{ x: isMobile ? -300 : -555, opacity: 0 }}
+            exit={{ x: isMobile ? -300 : -555, opacity: 0 }}
             transition={{
               duration: 0.8,
               delay: 0.25,
@@ -132,7 +136,7 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
                 <motion.div 
                   key={post.currentSlug} // Ensure key is unique
                   initial={{ opacity: 1, x:0 }}
-                  animate={{ opacity: 0, x: 1000 }}
+                  animate={{ opacity: 0, x: isMobile ? -300 : -1000 }}
                   transition={{
                     duration: 0.8,
                     delay: 0.2,
@@ -143,7 +147,7 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
                     <Image src={imageUrl} alt="" width={1200} height={700} className="rounded-t-lg h-[300px] object-cover" />
                     <CardContent className="mt-5">
                       <h3 className="text-xl line-clamp-2 font-bold">{CardTitle}</h3>
-                      <p className="line-clamp-1 text-xs mt-1 text-blue-600">{post.type}</p>
+                      <p className="line-clamp-1 text-xs mt-1 text-blue-600">#{post.type}</p>
                       <p className="text-xs mt-1 text-gray-500">
                         {new Date(post.date).toLocaleDateString(language, {
                           year: 'numeric',
