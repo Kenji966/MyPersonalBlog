@@ -9,8 +9,8 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { urlFor } from "@/app/lib/sanity";
 import { TwitterTweetEmbed  } from 'react-twitter-embed';
-
-
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 
 interface BlogContentProps {
@@ -99,8 +99,18 @@ export default function BlogContent({
 
           return (
             <div className="relative w-full mb-4">
-                    <TwitterTweetEmbed  tweetId={tweetId} />
-        </div>
+              <TwitterTweetEmbed tweetId={tweetId} />
+            </div>
+          );
+        },
+        code: ({ value }: { value: { language: string; code: string } }) => {
+          console.log("Code block:", value.code);
+          return (
+            <div className="my-8">
+              <SyntaxHighlighter language={value.language} style={solarizedlight}>
+                {value.code}
+              </SyntaxHighlighter>
+            </div>
           );
         }
       },

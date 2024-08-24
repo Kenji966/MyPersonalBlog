@@ -11,12 +11,22 @@ import {
 } from "@/components/ui/dropdown-menu"
 import ReactCountryFlag from "react-country-flag"
 import { useLanguage } from "./LanguageContext"
+import { useState } from "react";
+import { motion, Variants } from "framer-motion";
+
+const itemVariants: Variants = {
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 }
+  },
+  closed: { opacity: 0, y: 20, transition: { duration: 0.2 } }
+};
 
 export function LanguageToggle() {
   const { language, setLanguage } = useLanguage();
   const router = useRouter();
   const [selectedLanguage, setSelectedLanguage] = React.useState(language);
-
   React.useEffect(() => {
     setSelectedLanguage(language);
   }, [language]);
