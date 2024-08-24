@@ -135,11 +135,11 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
               {isAnimating && (
                 <motion.div 
                   key={post.currentSlug} // Ensure key is unique
-                  initial={{ opacity: 1, x:0 }}
-                  animate={{ opacity: 0, x: isMobile ? -300 : -1000 }}
+                  initial={{ opacity: 1  }}
+                  animate={{ opacity: 0}}
                   transition={{
                     duration: 0.8,
-                    delay: 0.2,
+                    delay: 0.1,
                     ease: [0, 0.71, 0.2, 1.01]
                   }}
                 >
