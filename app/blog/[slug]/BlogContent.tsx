@@ -5,7 +5,7 @@ import { PortableText } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useMotionValueEvent ,useScroll,useSpring  } from "framer-motion";
 import React, { useRef, useState } from "react";
 import { urlFor } from "@/app/lib/sanity";
 import { TwitterTweetEmbed  } from 'react-twitter-embed';
@@ -27,7 +27,7 @@ interface SectionProps {
 function Section({ children }: SectionProps) {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
-  
+      
     return (
       <section ref={ref}>
         <span
@@ -54,6 +54,13 @@ export default function BlogContent({
   date,
 }: BlogContentProps) {
     const [isOpen, setIsOpen] = useState(false)
+
+    const { scrollY } = useScroll();
+    const scaleX = useSpring(scrollY)
+    useMotionValueEvent(scrollY, "change", (latest) => {
+      console.log("Page scroll: ", latest)
+    })
+
 
     const components = {
       types: {
@@ -116,6 +123,7 @@ export default function BlogContent({
     
   return (
     <div>
+      {/* <motion.div style={{ scaleX }} />  */}
     <div className="mt-6">
     <motion.div
       className="box"
@@ -129,7 +137,7 @@ export default function BlogContent({
     >
      <h1> 
         <span className="block text-base text-center text-primary font-semibold  tracking-wide uppercase">
-        <p className="text-blue-600 text-xs"> #{type} </p>
+        <p className="text-blue-600 text-xs">#{type}</p>
         </span>
         <span className="mt-2 block text-3xl text-center leading-8 font-bold tracking-tight sm:text-4xl">
          {title} 
@@ -161,9 +169,11 @@ export default function BlogContent({
       <Section>  
       <div className="mt-16 prose prose-blue lg:prose-lg sm:prose-sm dark:prose-invert prose-li:marker:text-primary bg-clip-padding prose-a:text-primary mb-16 max-w-none">
       <PortableText value={content} components={components}  />
-        <Button asChild>
+      <div className="flex justify-center">
+        <Button asChild className="  inline-flex justify-center items-center px-4 py-2">
           <Link href="/" > <p className="text-white dark:text-black">Back</p></Link>
         </Button>
+        </div>
       </div>
       </Section>
     </div>
