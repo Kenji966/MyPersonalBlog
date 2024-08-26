@@ -12,6 +12,11 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from "react";
 import {useMediaQuery} from '@mui/material'
 import TagComponent from "./tagComponent";
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+
+
+
 
 interface ClientComponentProps {
   data: simpleBlogCard[];
@@ -36,18 +41,30 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
 
     const [selectedType, setSelectedType] = useState('all');
 
-    const filteredData = selectedType === 'all' 
-    ? data 
-    : data.filter(post => {
-      console.log("post.type:", post.type); // 在这里打印 post.type
-      return post.type === selectedType;
-    });
+    const [filteredData, setFilteredData] = useState(data);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleCardClick = (slug: string) => {
       setIsAnimating(true); // 开始动画
       setDestination(`/blog/${slug}?lang=${language}`); // 设置目标路径
     };
-    
+
+    useEffect(() => {
+      // 当 selectedType 改变时，触发加载状态
+      setIsLoading(true);
+  
+      const timeoutId = setTimeout(() => {
+        const newFilteredData = selectedType === 'all'
+          ? data
+          : data.filter(post => post.type === selectedType);
+        
+        setFilteredData(newFilteredData);
+        setIsLoading(false);
+      }, 500); // 模拟加载时间
+  
+      return () => clearTimeout(timeoutId);
+    }, [selectedType]);
+  
 
     useEffect(() => {
       if (destination) {
@@ -73,9 +90,8 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
               ease: [0, 0.71, 0.2, 1.01]
             }}
           >
-            <h1 className="flex justify-center">{Title}</h1>
-            <br />
-            <h1 className="flex justify-center text-sm text-gray-600 dark:text-gray-300">{Description}</h1>
+            <h1 className="flex justify-center  p-5">{Title}</h1>
+            <h1 className="flex justify-center text-sm text-gray-600 dark:text-gray-300 p-5">{Description}</h1>
 
             
             <TagComponent onTagChange={(tag) => setSelectedType(tag)} />
@@ -106,6 +122,15 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
         )}
       </AnimatePresence>
 
+      {isLoading ? (
+        <div className="loading-screen">
+          <Box sx={{ width: '100%', position: 'fixed', bottom: 0, left: 0 }}>
+
+           <LinearProgress />
+            </Box>
+          </div>
+      ) : (
+
       <div className="grid grid-cols-1 md:grid-cols-1 mt-4 gap-5 mb-16">
         {filteredData.map((post) => {
           const CardTitle = language === 'JP' ? post.title_JP : language === 'HK' ? post.title_TW : post.title_EN;
@@ -123,7 +148,7 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
                     duration: 0.8,
-                    delay: 1,
+                    delay: 0,
                     ease: [0, 0.71, 0.2, 1.01]
                   }}
                 >
@@ -160,7 +185,7 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
                   animate={{ opacity: 0}}
                   transition={{
                     duration: 0.8,
-                    delay: 0.1,
+                    delay: 0,
                     ease: [0, 0.71, 0.2, 1.01]
                   }}
                 >
@@ -185,6 +210,7 @@ const ClientComponent = ({ data }: ClientComponentProps) => {
           );
         })}
       </div>
+      )}
     </div>
   );
 };

@@ -2,10 +2,8 @@
   import { useState } from 'react';
   import * as React from 'react';
   // import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-  import Tabs from '@mui/material/Tabs';
-  import Tab from '@mui/material/Tab';
-  import Box from '@mui/material/Box';
-  
+  import { Box, Tabs, Tab } from '@mui/material';
+
   interface TagComponentProps {
     onTagChange: (tag: string) => void;
   }
@@ -60,26 +58,14 @@
     const [value, setValue] = React.useState(0);
 
     return (
-      // <Tabs defaultValue="all" onValueChange={handleTabChange} className=" pt-10 w-full flex justify-center sm:w-[600px] xl:w-[900px]">
-      //   <TabsList>
-      //     <TabsTrigger value="all">ALL</TabsTrigger>
-      //     <TabsTrigger value="Game Dev">#Game Dev</TabsTrigger>
-      //     <TabsTrigger value="Web Dev">#Web Dev</TabsTrigger>
-      //     <TabsTrigger value="AR Dev">#AR</TabsTrigger>
-      //   </TabsList>
-      //   <TabsContent value="all"></TabsContent>
-      //   <TabsContent value="Game Dev"></TabsContent>
-      //   <TabsContent value="Web Dev"></TabsContent>
-      //   <TabsContent value="AR"></TabsContent>
-      // </Tabs>
-    
-        <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+   
+        <Box className=" pt-10 w-full flex justify-center sm:w-[900px] xl:w-[900px]" sx={{ width: '100%'  }}>
+          <Box sx={{ borderBottom: 0, borderColor: 'gray' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="ALL" {...a11yProps(0)} />
-          <Tab label="Game Dev" {...a11yProps(1)} />
-          <Tab label="Web Dev" {...a11yProps(2)} />
-          <Tab label="AR Dev" {...a11yProps(3)} />
+          <Tab label="ALL" {...a11yProps(0)}  sx={{ color: value === 0 ? 'blue' : 'gray' }} />
+          <Tab label="Game Dev" {...a11yProps(1)} sx={{ color: value === 1 ? 'blue' : 'gray' }} />
+          <Tab label="Web Dev" {...a11yProps(2)} sx={{ color: value === 2 ? 'blue' : 'gray' }}/>
+          <Tab label="AR Dev" {...a11yProps(3)} sx={{ color: value === 3 ? 'blue' : 'gray' }} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>

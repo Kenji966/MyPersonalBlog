@@ -1,7 +1,6 @@
 import { client } from "@/app/lib/sanity";
 import ClientComponent from './components/ClientComponent';
 import { simpleBlogCard } from "@/app/lib/interface";
-import HomeClientContent from "./components/HomeClientContent";
 
 async function getData() {
   const timestamp = new Date().getTime(); 
